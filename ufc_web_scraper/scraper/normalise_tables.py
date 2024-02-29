@@ -1,6 +1,7 @@
 #Import libraries for data cleaning
 import pandas as pd
 import os
+from pathlib import Path
 
 def add_primary_keys(ufc_events,ufc_fights,ufc_fight_stats,ufc_fighters):
 
@@ -106,22 +107,22 @@ def save_to_file(ufc_events,ufc_fights,ufc_fight_stats,ufc_fighters):
     ufc_fighters.set_index('fighter_id',inplace=True)
     
     #Saves dataframes to CSV file
-    path = os.getcwd() + '/scraped_files'
+    path = Path('.').absolute() / 'scraped_files'
     
-    ufc_events.to_csv(path + '/' + 'ufc_event_data.csv')
-    ufc_fights.to_csv(path + '/' + 'ufc_fight_data.csv')
-    ufc_fighters.to_csv(path + '/' + 'ufc_fighter_data.csv')
-    ufc_fight_stats.to_csv(path + '/' + 'ufc_fight_stat_data.csv')
+    ufc_events.to_csv(path / 'ufc_event_data.csv')
+    ufc_fights.to_csv(path /  'ufc_fight_data.csv')
+    ufc_fighters.to_csv(path / 'ufc_fighter_data.csv')
+    ufc_fight_stats.to_csv(path /  'ufc_fight_stat_data.csv')
 
 
 def normalise_tables():
 
     #Import csv files to Pandas dataframe
-    path = os.getcwd() + '/scraped_files'
-    ufc_events = pd.read_csv(path + '/' +'ufc_event_data.csv')
-    ufc_fights = pd.read_csv(path + '/' + 'ufc_fight_data.csv')
-    ufc_fight_stats = pd.read_csv(path + '/' + 'ufc_fight_stat_data.csv')
-    ufc_fighters = pd.read_csv(path + '/' + 'ufc_fighter_data.csv')
+    path = Path('.').absolute() / 'scraped_files'
+    ufc_events = pd.read_csv(path / 'ufc_event_data.csv')
+    ufc_fights = pd.read_csv(path / 'ufc_fight_data.csv')
+    ufc_fight_stats = pd.read_csv(path / 'ufc_fight_stat_data.csv')
+    ufc_fighters = pd.read_csv(path /  'ufc_fighter_data.csv')
 
     #Add primary keys to tables
     print('Adding primary keys')

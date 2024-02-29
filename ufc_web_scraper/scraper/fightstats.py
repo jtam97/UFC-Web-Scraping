@@ -4,14 +4,16 @@ import bs4
 import re
 import csv
 import os
+from pathlib import Path
+from tqdm import tqdm
 
 #Define paths for url folder and scraped files folder
-url_path = os.getcwd() + '/urls'
-file_path = os.getcwd() + '/scraped_files'
+url_path = Path('.').absolute() / 'urls'
+file_path = Path('.').absolute() / 'scraped_files'
 
 def filter_duplicate_urls(fight_urls):
     if 'ufc_fight_stat_data.csv' in os.listdir(file_path):
-        with open(file_path + '/' + 'ufc_fight_stat_data.csv','r') as csv_file:
+        with open(file_path / 'ufc_fight_stat_data.csv','r') as csv_file:
             reader = csv.DictReader(csv_file)
             scraped_fight_urls = [row['fight_url'] for row in reader]
             for url in scraped_fight_urls:
@@ -144,7 +146,7 @@ def scrape_fightstats():
     
     #Creates csv file for scraped data
     if 'ufc_fight_stat_data.csv' not in os.listdir(file_path):
-        with open (file_path + '/' + 'ufc_fight_stat_data.csv','w',newline="",encoding='UTF8') as ufc_fighter_data:
+        with open (file_path / 'ufc_fight_stat_data.csv','w',newline="",encoding='UTF8') as ufc_fighter_data:
             writer = csv.writer(ufc_fighter_data)
             writer.writerow(['fighter_id',
                              'knockdowns',
@@ -164,7 +166,7 @@ def scrape_fightstats():
 
     #Get fight URLs from file
     if 'fight_urls.csv' in os.listdir(url_path):
-        with open(url_path + '/' + 'fight_urls.csv','r') as fight_csv:
+        with open(url_path / 'fight_urls.csv','r') as fight_csv:
             reader = csv.reader(fight_csv)
             fight_urls = [row[0] for row in reader]
     else:
@@ -174,14 +176,14 @@ def scrape_fightstats():
     filter_duplicate_urls(fight_urls)
     
     urls_to_scrape = len(fight_urls)
-    print(f'Scraping {urls_to_scrape} fights...')
+    print(f'Scraping {urls_to_scrape} fight stats...')
     urls_scraped = 0
     
-    with open(file_path + '/' + 'ufc_fight_stat_data.csv','a+') as csv_file:
+    with open(file_path / 'ufc_fight_stat_data.csv','a+') as csv_file:
         writer = csv.writer(csv_file)
     
         #Iterate through each fight_url to scrape fight stats
-        for url in fight_urls:
+        for url in tqdm(fight_urls):
 
             fight_url = requests.get(url)
             fight_soup = bs4.BeautifulSoup(fight_url.text,'lxml')
